@@ -34,6 +34,10 @@ clean:
 	@echo "Cleaning up .terraform directories..."
 	find . -type d -name ".terraform" -exec rm -rf {} +
 
+# Scaffold a new module
+scaffold:
+	@bash scripts/scaffold.sh $(PROVIDER) $(CATEGORY) $(NAME)
+
 # Help
 help:
 	@echo ""
@@ -44,5 +48,6 @@ help:
 	@echo "  make security       - Run Checkov on selected module"
 	@echo "  make check          - Run all local validations"
 	@echo "  make clean          - Remove .terraform folders"
-	@echo "  make PROVIDER=name  - Target a specific provider (default: aws)"
+	@echo "  make scaffold CATEGORY=category-name NAME=module-name - Create scaffold using script"
+	@echo "  make PROVIDER=provider-name  - Target a specific provider (default: aws)"
 	@echo ""
