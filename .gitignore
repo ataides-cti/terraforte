@@ -1,0 +1,36 @@
+# Terraform state
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.crash/
+.terraform/
+.terraform.lock.hcl
+
+# Terraform plan files
+*.tfplan
+
+# CLI tools and local scripts
+*.log
+*.out
+*.bak
+*.swp
+*.tmp
+
+# Python virtual environments
+.venv/
+__pycache__/
+*.py[cod]
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Test output
+tests/__pycache__/
+tests/output/
+coverage/
+.cache/
+
+# IDEs
+.vscode/
+.idea/
