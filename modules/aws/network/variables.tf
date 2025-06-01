@@ -29,7 +29,7 @@ variable "azs_count" {
   default     = 2
   nullable    = false
   validation {
-    condition     = var.subnets_azs_count >= 1 && var.subnets_azs_count <= 4
+    condition     = var.azs_count >= 1 && var.azs_count <= 4
     error_message = "The number of Availability Zones must be between 1 and 4."
   }
 }
@@ -50,7 +50,7 @@ variable "ipv4_cidr_block" {
 
 variable "ipv4_ipam_pool" {
   type = object({
-    pool_id   = string
+    pool_id        = string
     netmask_length = number
   })
   description = "The IPv4 IPAM pool to use for allocating this VPC's CIDR. Cannot be used with ipv4_cidr_block."
@@ -63,14 +63,14 @@ variable "ipv4_ipam_pool" {
 
 variable "ipv6_ipam_pool" {
   type = object({
-    pool_id   = string
+    pool_id        = string
     cidr_block     = string
     netmask_length = number
   })
   description = "The IPv6 IPAM pool to use for allocating this VPC's CIDR. Cannot be used with assign_generated_ipv6_cidr_block."
   default     = null
   validation {
-    condition     = var.ipv6_ipam_pool != null && var.assign_generated_ipv6_cidr_block != null
+    condition     = var.ipv6_ipam_pool != null && var.vpc_assign_generated_ipv6_cidr_block != null
     error_message = "ipv6_ipam_pool cannot be used with assign_generated_ipv6_cidr_block."
   }
 }
@@ -98,7 +98,7 @@ variable "vpc_instance_tenancy" {
   default     = "default"
   nullable    = false
   validation {
-    condition     = contains(["default", "dedicated"], var.instance_tenancy)
+    condition     = contains(["default", "dedicated"], var.vpc_instance_tenancy)
     error_message = "Invalid instance tenancy. Must be either 'default' or 'dedicated'."
   }
 }
@@ -160,7 +160,7 @@ variable "subnets_azs_names" {
   default     = []
   nullable    = false
   validation {
-    condition     = var.subnets_azs_names == [] ? var.subnets_azs_count == length(data.aws_availability_zones.available.names) : var.subnets_azs_count == length(var.subnets_azs_names)
+    condition     = length(var.subnets_azs_names) == 0 ? var.azs_count == length(data.aws_availability_zones.available.names) : var.azs_count == length(var.subnets_azs_names)
     error_message = "The number of Availability Zones must be equal to the number of Availability Zone names."
   }
 }
@@ -245,7 +245,7 @@ variable "subnets_private_ipv4_cidr_offset" {
   default     = 100
   nullable    = false
   validation {
-    condition     = var.subnets_private_ipv4_cidr_offset > var.subnets_azs_count
+    condition     = var.subnets_private_ipv4_cidr_offset > var.azs_count
     error_message = "The private subnet offset must be greater than the number of AZs."
   }
 }
@@ -358,7 +358,7 @@ variable "ngw_enabled" {
 variable "ngw_count" {
   type        = number
   description = "The number of NAT gateways to deploy."
-  default     = var.azs_count
+  default     = 1
   nullable    = false
   validation {
     condition     = var.ngw_count >= 1 && var.ngw_count <= var.azs_count
@@ -401,13 +401,13 @@ variable "acl_public_enabled" {
 }
 
 variable "acl_public_ingress_rules" {
-  type        = list(object({
-    protocol = string
-    number = number
-    action = string
+  type = list(object({
+    protocol   = string
+    number     = number
+    action     = string
     cidr_block = string
-    from_port = number
-    to_port = number
+    from_port  = number
+    to_port    = number
   }))
   description = "Ingress rules for the public network ACL."
   default     = []
@@ -415,13 +415,13 @@ variable "acl_public_ingress_rules" {
 }
 
 variable "acl_public_egress_rules" {
-  type        = list(object({
-    protocol = string
-    number = number
-    action = string
+  type = list(object({
+    protocol   = string
+    number     = number
+    action     = string
     cidr_block = string
-    from_port = number
-    to_port = number
+    from_port  = number
+    to_port    = number
   }))
   description = "Egress rules for the public network ACL."
   default     = []
@@ -443,13 +443,13 @@ variable "acl_private_enabled" {
 
 
 variable "acl_private_ingress_rules" {
-  type        = list(object({
-    protocol = string
-    number = number
-    action = string
+  type = list(object({
+    protocol   = string
+    number     = number
+    action     = string
     cidr_block = string
-    from_port = number
-    to_port = number
+    from_port  = number
+    to_port    = number
   }))
   description = "Ingress rules for the private network ACLs."
   default     = []
@@ -457,13 +457,13 @@ variable "acl_private_ingress_rules" {
 }
 
 variable "acl_private_egress_rules" {
-  type        = list(object({
-    rule_number = number
-    rule_protocol = string
-    rule_action = string
+  type = list(object({
+    rule_number     = number
+    rule_protocol   = string
+    rule_action     = string
     rule_cidr_block = string
-    rule_from_port = number
-    rule_to_port = number
+    rule_from_port  = number
+    rule_to_port    = number
   }))
   description = "Egress rules for the private network ACLs."
   default     = []
