@@ -1,6 +1,8 @@
 TERRAFORM ?= terraform
 TFLINT ?= tflint
 CHECKOV ?= checkov
+PYTHON ?= python3
+BASH ?= /bin/bash
 
 # Default module (can be overridden with `make PROVIDER=provider-name`)
 PROVIDER ?= aws
@@ -36,7 +38,11 @@ clean:
 
 # Scaffold a new module
 scaffold:
-	@bash scripts/scaffold.sh $(PROVIDER) $(CATEGORY) $(NAME)
+	$(BASH) scripts/scaffold.sh modules/$(PROVIDER)/$(NAME)
+
+# Generate README.md from .tf files
+readme:
+	$(PYTHON) scripts/readme_from_tf.py $(MODULE_PATH)/$(NAME)
 
 # Help
 help:
@@ -48,6 +54,7 @@ help:
 	@echo "  make security       - Run Checkov on selected module"
 	@echo "  make check          - Run all local validations"
 	@echo "  make clean          - Remove .terraform folders"
-	@echo "  make scaffold CATEGORY=category-name NAME=module-name - Create scaffold using script"
+	@echo "  make scaffold NAME=module-name - Create scaffold using script"
+	@echo "  make readme NAME=module-name - Generate README.md from variables.tf"
 	@echo "  make PROVIDER=provider-name  - Target a specific provider (default: aws)"
 	@echo ""
