@@ -7,6 +7,7 @@ Thank you for considering contributing! This project aims to provide a high-qual
 Before contributing, please ensure you have:
 
 - Terraform v1.12+ installed
+- `python-hcl2` installed
 - `tflint`, `checkov`, and `opa` installed
 - Pre-commit set up (`pre-commit install`)
 - Familiarity with basic Git workflows
@@ -19,17 +20,13 @@ Before contributing, please ensure you have:
 git checkout -b feat/my-new-module
 ```
 
-2.	Create your module under `modules/cloud-provider/your-module-name/` with the following files:
+2. Run the make command to create a scaffold folder:
 
-- main.tf, variables.tf, outputs.tf
-- metadata.yaml (template below)
-- README.md (document usage and inputs/outputs)
-- tests/ with at least:
-  - compliance/ (if applicable)
-  - integration/ (minimal example)
-- Optional: compliance/ folder with Rego or Checkov configs
+```bash
+make scaffold PROVIDER=provider NAME=name 
+```
 
-3.	Validate and test:
+3.	After making your changes, validate and test:
 
 ```bash
 terraform init && terraform validate
@@ -51,7 +48,7 @@ Each module must include a metadata.yaml file like the following:
 
 ```bash
 id: aws-s3-secure
-owner: platform-team@yourcompany.com
+owner: oss@ataides.com
 lifecycle: stable
 compliance:
   - cis-aws-1.3
